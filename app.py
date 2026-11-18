@@ -172,7 +172,7 @@ def evaluate(answer, reference, keywords):
 # ---------------------------------------------------------------- routes ---
 @app.route("/")
 def index():
-    return redirect(url_for("dashboard") if "uid" in session else url_for("login"))
+    return render_template("landing.html") if "uid" not in session else redirect(url_for("dashboard"))
 
 
 @app.route("/register", methods=["GET", "POST"])

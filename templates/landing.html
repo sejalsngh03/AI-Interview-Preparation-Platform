@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Interview Prep — Practice & Improve</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
+</head>
+<body>
+<header class="landing-header">
+  <nav class="landing-nav">
+    <a class="brand" href="/">
+      <span class="brand-mark">IP</span> Interview Prep
+    </a>
+    <div class="landing-nav-actions">
+      <a class="btn-ghost" href="{{ url_for('login') }}">Log in</a>
+      <a class="btn-primary" href="{{ url_for('register') }}">Get Started Free</a>
+    </div>
+  </nav>
+</header>
+
+<main class="landing-main">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-bg">
+      <div class="hero-shape shape-1"></div>
+      <div class="hero-shape shape-2"></div>
+      <div class="hero-shape shape-3"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">MCA Mini Project</div>
+      <h1 class="hero-title">Master Your Interviews<br>with <span class="highlight">AI-Powered</span> Practice</h1>
+      <p class="hero-description">Real-time feedback on your answers using keyword matching, TF-IDF cosine similarity, and answer-length analysis. Track progress with interactive charts.</p>
+      <div class="hero-actions">
+        <a class="btn-primary btn-lg" href="{{ url_for('register') }}">Start Practicing Free</a>
+        <a class="btn-ghost btn-lg" href="#features">See How It Works</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-number" data-count="52">0</span>
+          <span class="hero-stat-label">Questions</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-number" data-count="4">0</span>
+          <span class="hero-stat-label">Categories</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-number" data-count="5">0</span>
+          <span class="hero-stat-label">Job Roles</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-number" data-count="3">0</span>
+          <span class="hero-stat-label">Difficulty Levels</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-illustration">
+      <div class="illustration-card">
+        <div class="illustration-header">
+          <span class="illustration-dot red"></span>
+          <span class="illustration-dot yellow"></span>
+          <span class="illustration-dot green"></span>
+        </div>
+        <div class="illustration-code">
+          <div class="code-line"><span class="code-keyword">def</span> <span class="code-function">evaluate_answer</span>(user, reference, keywords):</div>
+          <div class="code-line"><span class="code-indent"></span><span class="code-comment"># 50% Keyword Match + 30% TF-IDF + 20% Length</span></div>
+          <div class="code-line"><span class="code-indent"></span>kw_score = <span class="code-function">keyword_coverage</span>(user, keywords)</div>
+          <div class="code-line"><span class="code-indent"></span>tfidf_score = <span class="code-function">cosine_similarity</span>(user, reference)</div>
+          <div class="code-line"><span class="code-indent"></span>len_score = <span class="code-function">length_bonus</span>(user)</div>
+          <div class="code-line"><span class="code-indent"></span><span class="code-keyword">return</span> (kw_score * 0.5 + tfidf_score * 0.3 + len_score * 0.2) * 10</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features-section">
+    <div class="section-header">
+      <h2>Everything You Need to <span class="highlight">Ace Your Interviews</span></h2>
+      <p>Comprehensive practice platform with AI evaluation and progress tracking</p>
+    </div>
+    <div class="features-grid">
+      <article class="feature-card" data-feature="categories">
+        <div class="feature-icon">🎯</div>
+        <h3>4 Interview Categories</h3>
+        <p>Technical, HR, Behavioral, and Programming questions tailored to your target role</p>
+        <ul class="feature-list">
+          <li>Technical: Data Structures, Algorithms, ML, Web Dev</li>
+          <li>HR: Behavioral, Situational, Salary Questions</li>
+          <li>Programming: Language-specific, OOP, Patterns</li>
+        </ul>
+      </article>
+      <article class="feature-card" data-feature="evaluation">
+        <div class="feature-icon">🤖</div>
+        <h3>AI Answer Evaluation</h3>
+        <p>Three-technique scoring for accurate, explainable feedback</p>
+        <ul class="feature-list">
+          <li><strong>50%</strong> Keyword Coverage — required terms present</li>
+          <li><strong>30%</strong> TF-IDF Cosine Similarity — semantic match</li>
+          <li><strong>20%</strong> Answer Length — rewards detailed responses</li>
+        </ul>
+      </article>
+      <article class="feature-card" data-feature="progress">
+        <div class="feature-icon">📈</div>
+        <h3>Progress Tracking</h3>
+        <p>Visualize your improvement over time with interactive charts</p>
+        <ul class="feature-list">
+          <li>Score Trend Line Chart — session-by-session</li>
+          <li>Score Distribution Doughnut — performance overview</li>
+          <li>Detailed History Table — filter & review</li>
+        </ul>
+      </article>
+      <article class="feature-card" data-feature="customization">
+        <div class="feature-icon">⚙️</div>
+        <h3>Customizable Sessions</h3>
+        <p>Build interviews matching your exact preparation needs</p>
+        <ul class="feature-list">
+          <li>5 Job Roles + 3 Difficulty Levels</li>
+          <li>3, 5, or 8 Questions per session</li>
+          <li>Smart fallback for question variety</li>
+        </ul>
+      </article>
+      <article class="feature-card" data-feature="feedback">
+        <div class="feature-icon">💡</div>
+        <h3>Instant Feedback</h3>
+        <p>Know exactly how to improve after every answer</p>
+        <ul class="feature-list">
+          <li>0–10 Score with qualitative rating</li>
+          <li>Matched & Missing Keyword Tags</li>
+          <li>Model Answer Reference</li>
+          <li>Specific Improvement Suggestions</li>
+        </ul>
+      </article>
+      <article class="feature-card" data-feature="security">
+        <div class="feature-icon">🔒</div>
+        <h3>Secure & Private</h3>
+        <p>Your data stays local with industry-standard security</p>
+        <ul class="feature-list">
+          <li>Hashed Passwords (scrypt via Werkzeug)</li>
+          <li>CSRF Protection on All Forms</li>
+          <li>Session-based Authentication</li>
+          <li>No External API Dependencies</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="howitworks-section">
+    <div class="section-header">
+      <h2>Get Started in <span class="highlight">3 Simple Steps</span></h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">1</div>
+        <div class="step-icon">👤</div>
+        <h3>Create Account</h3>
+        <p>Sign up in seconds with email and secure password. No verification emails required.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">2</div>
+        <div class="step-icon">🎯</div>
+        <h3>Choose Interview</h3>
+        <p>Select category, role, difficulty, and question count. We'll curate the perfect session.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">3</div>
+        <div class="step-icon">📝</div>
+        <h3>Practice & Improve</h3>
+        <p>Answer questions, get instant AI feedback, track progress, and watch your scores rise.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-icon">📚</div>
+        <div class="stat-content">
+          <span class="stat-number" data-count="52">0</span>
+          <span class="stat-label">Curated Questions</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">👥</div>
+        <div class="stat-content">
+          <span class="stat-number" data-count="5">0</span>
+          <span class="stat-label">Job Roles Covered</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">🎚️</div>
+        <div class="stat-content">
+          <span class="stat-number" data-count="3">0</span>
+          <span class="stat-label">Difficulty Levels</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-content">
+          <span class="stat-number" data-count="10">0</span>
+          <span class="stat-label">Max Score per Answer</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2>Ready to <span class="highlight">Ace Your Next Interview?</span></h2>
+      <p>Join hundreds of students practicing with AI-powered feedback. Free forever, no credit card required.</p>
+      <a class="btn-primary btn-xl" href="{{ url_for('register') }}">Start Free Practice →</a>
+    </div>
+  </section>
+</main>
+
+<footer class="landing-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="/">
+        <span class="brand-mark">IP</span> Interview Prep
+      </a>
+      <p>AI-powered interview preparation platform for students and professionals. Built as an MCA Mini Project.</p>
+      <div class="footer-social">
+        <a href="#" aria-label="GitHub">⌘</a>
+        <a href="#" aria-label="LinkedIn">💼</a>
+        <a href="#" aria-label="Twitter">🐦</a>
+      </div>
+    </div>
+    <div class="footer-links">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="{{ url_for('register') }}">Get Started</a></li>
+        <li><a href="{{ url_for('login') }}">Log In</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Categories</h4>
+      <ul>
+        <li><a href="#features">Technical</a></li>
+        <li><a href="#features">HR & Behavioral</a></li>
+        <li><a href="#features">Programming</a></li>
+        <li><a href="#features">Data Science & ML</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="#">Documentation</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 AI Interview Prep. Built with Flask, scikit-learn & Chart.js.</p>
+    <p class="footer-credits">MCA Mini Project — Educational Use Only</p>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='landing.js') }}"></script>
+</body>
+</html>
