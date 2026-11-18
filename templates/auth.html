@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Create account' if mode == 'register' else 'Log in' }} · AI Interview Prep{% endblock %}
+{% block content %}
+<section class="auth-wrap">
+  <div class="auth-card">
+    <p class="eyebrow-none kicker">Interview Prep</p>
+    <h1>{{ 'Create your account' if mode == 'register' else 'Welcome back' }}</h1>
+    <p class="lede">
+      {% if mode == 'register' %}
+        Set up a profile to start practicing technical, HR and behavioral interviews.
+      {% else %}
+        Log in to pick up your interview practice where you left off.
+      {% endif %}
+    </p>
+
+    <form method="POST" class="stack-form">
+      {% if mode == 'register' %}
+      <label>
+        Full name
+        <input type="text" name="name" required autofocus placeholder="e.g. Sejal Singh">
+      </label>
+      {% endif %}
+      <label>
+        Email
+        <input type="email" name="email" required placeholder="you@example.com" {{ 'autofocus' if mode != 'register' }}>
+      </label>
+      <label>
+        Password
+        <input type="password" name="password" required minlength="4" placeholder="At least 4 characters">
+      </label>
+      <button type="submit" class="btn-primary">{{ 'Create account' if mode == 'register' else 'Log in' }}</button>
+    </form>
+
+    <p class="switch-line">
+      {% if mode == 'register' %}
+        Already have an account? <a href="{{ url_for('login') }}">Log in</a>
+      {% else %}
+        New here? <a href="{{ url_for('register') }}">Create an account</a>
+      {% endif %}
+    </p>
+  </div>
+</section>
+{% endblock %}

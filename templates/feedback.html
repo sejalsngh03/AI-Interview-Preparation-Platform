@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Feedback · AI Interview Prep{% endblock %}
+{% block content %}
+<section class="fb-wrap">
+  <p class="q-count">Question {{ step }} of {{ total }} — your answer</p>
+  <h1 class="q-text fb-question">{{ question['text'] }}</h1>
+
+  <div class="fb-score-row">
+    <span class="fb-score-num {{ 'score-high' if score >= 8 else 'score-mid' if score >= 5 else 'score-low' }}">{{ score }}</span>
+    <span class="fb-score-out">/10</span>
+    <span class="fb-score-tag">
+      {% if score >= 8 %}Strong answer
+      {% elif score >= 5 %}Needs a bit more
+      {% else %}Needs work
+      {% endif %}
+    </span>
+  </div>
+
+  <div class="fb-block">
+    <h2>Your answer</h2>
+    <p class="qa-answer">{{ answer or "No answer submitted." }}</p>
+  </div>
+
+  <div class="fb-block">
+    <h2>Feedback</h2>
+    <ul class="feedback-list">
+      {% for f in feedback %}<li>{{ f }}</li>{% endfor %}
+    </ul>
+  </div>
+
+  <details class="fb-reference">
+    <summary>Show a model answer</summary>
+    <p>{{ question['reference'] }}</p>
+  </details>
+
+  <a href="{{ next_url }}" class="btn-primary btn-block fb-continue">
+    {{ 'See final result →' if is_last else 'Continue to next question →' }}
+  </a>
+</section>
+{% endblock %}

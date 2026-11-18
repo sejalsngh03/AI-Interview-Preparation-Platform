@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · AI Interview Prep{% endblock %}
+{% block content %}
+
+{% set cat_class = {
+  'Technical': 'cat-technical',
+  'HR': 'cat-hr',
+  'Behavioral': 'cat-behavioral',
+  'Programming': 'cat-programming'
+} %}
+
+<section class="hero">
+  <div class="hero-ruled"></div>
+  <div class="hero-inner">
+    <p class="kicker kicker-light">Practice room</p>
+    <h1 class="hero-title">Ready to practice, {{ session.get('name').split(' ')[0] }}?</h1>
+    <p class="hero-lede">Pick a category, role and difficulty below — your answers get scored instantly by the AI evaluator.</p>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="hero-stat-num">{{ total }}</span>
+      <span class="hero-stat-label">Interviews completed</span>
+    </div>
+    <div class="hero-stat-divider"></div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">{{ avg_overall if avg_overall is not none else '—' }}<span class="hero-stat-suffix">/10</span></span>
+      <span class="hero-stat-label">Average score</span>
+    </div>
+    <div class="hero-stat-divider"></div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">{{ best if best is not none else '—' }}<span class="hero-stat-suffix">/10</span></span>
+      <span class="hero-stat-label">Best score</span>
+    </div>
+  </div>
+</section>
+
+<section class="setup-grid">
+  <div class="setup-card">
+    <h2>Start a new mock interview</h2>
+    <form method="POST" action="{{ url_for('new_interview') }}" class="stack-form">
+
+      <div class="field-block">
+        <span class="field-label">Category</span>
+        <div class="chip-row">
+          {% for c in categories %}
+          <label class="chip {{ cat_class[c] }}">
+            <input type="radio" name="category" value="{{ c }}" {{ 'checked' if loop.first }} required>
+            <span>{{ c }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <label>
+        Job role
+        <select name="role" required>
+          {% for r in roles %}<option value="{{ r }}">{{ r }}</option>{% endfor %}
+        </select>
+      </label>
+
+      <div class="field-block">
+        <span class="field-label">Difficulty</span>
+        <div class="chip-row">
+          {% for l in levels %}
+          <label class="chip chip-level">
+            <input type="radio" name="level" value="{{ l }}" {{ 'checked' if loop.first }} required>
+            <span>{{ l }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="field-block">
+        <span class="field-label">Number of questions</span>
+        <div class="chip-row">
+          {% for n in [3, 5, 8] %}
+          <label class="chip chip-count">
+            <input type="radio" name="count" value="{{ n }}" {{ 'checked' if n == 5 }}>
+            <span>{{ n }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary btn-block">Start interview →</button>
+    </form>
+  </div>
+
+  <div class="recent-card">
+    <h2>Recent sessions</h2>
+    {% if recent %}
+      <ul class="recent-list">
+        {% for iv, score in recent %}
+        <li>
+          <a href="{{ url_for('result', interview_id=iv['id']) }}" class="{{ cat_class[iv['category']] }}">
+            <span class="recent-dot"></span>
+            <span class="recent-info">
+              <span class="recent-tag">{{ iv['category'] }} · {{ iv['role'] }}</span>
+              <span class="recent-date">{{ iv['created_at'][:10] }}</span>
+            </span>
+            <span class="score-pill {{ 'score-high' if score >= 8 else 'score-mid' if score >= 5 else 'score-low' }}">{{ score }}/10</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="empty-block">
+        <p class="empty-note">No sessions yet.</p>
+        <p class="empty-sub">Your first mock interview will show up here once you finish it.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

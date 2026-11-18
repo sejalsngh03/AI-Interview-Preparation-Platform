@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Result · AI Interview Prep{% endblock %}
+{% block content %}
+<section class="result-head">
+  <p class="tag">{{ interview['category'] }} · {{ interview['role'] }} · {{ interview['level'] }}</p>
+  <h1>Overall score: {{ overall }}/10</h1>
+  <p class="lede">
+    {% if overall >= 8 %}Excellent work — your answers were well structured and on target.
+    {% elif overall >= 5 %}Solid attempt — a few answers could use more detail or the right keywords.
+    {% else %}This was a tough round — review the feedback below before your next attempt.
+    {% endif %}
+  </p>
+  <div class="result-actions">
+    <a class="btn-ghost" href="{{ url_for('dashboard') }}">Back to dashboard</a>
+    <a class="btn-ghost" href="{{ url_for('progress') }}">View progress</a>
+  </div>
+</section>
+
+<section class="qa-list">
+  {% for d in detailed %}
+  <article class="qa-card">
+    <div class="qa-card-head">
+      <h2>Q{{ loop.index }}. {{ d.question }}</h2>
+      <span class="score-pill {{ 'score-high' if d.score >= 8 else 'score-mid' if d.score >= 5 else 'score-low' }}">{{ d.score }}/10</span>
+    </div>
+    <p class="qa-answer">{{ d.answer or "No answer submitted." }}</p>
+    <ul class="feedback-list">
+      {% for f in d.feedback %}<li>{{ f }}</li>{% endfor %}
+    </ul>
+  </article>
+  {% endfor %}
+</section>
+{% endblock %}

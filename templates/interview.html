@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Question {{ step }} · AI Interview Prep{% endblock %}
+{% block content %}
+<section class="interview-wrap">
+  <div class="progress-strip">
+    {% for i in range(1, total + 1) %}
+      <span class="progress-dot {{ 'done' if i < step else 'active' if i == step else '' }}">{{ i }}</span>
+      {% if i < total %}<span class="progress-line {{ 'done' if i < step else '' }}"></span>{% endif %}
+    {% endfor %}
+  </div>
+
+  <p class="q-meta">
+    <span class="tag">{{ interview['category'] }}</span>
+    <span class="tag">{{ interview['role'] }}</span>
+    <span class="tag">{{ interview['level'] }}</span>
+    <span class="q-count">Question {{ step }} of {{ total }}</span>
+  </p>
+
+  <h1 class="q-text">{{ question['text'] }}</h1>
+
+  <form method="POST" class="stack-form">
+    <label>
+      Your answer
+      <textarea name="answer" rows="8" required autofocus placeholder="Type your answer here — explain your reasoning, not just a one-line reply."></textarea>
+    </label>
+    <button type="submit" class="btn-primary btn-block">Submit answer →</button>
+  </form>
+</section>
+{% endblock %}
