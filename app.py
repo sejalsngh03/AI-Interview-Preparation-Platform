@@ -28,9 +28,14 @@ csrf = CSRFProtect(app)
 
 # Database path - use Render disk mount in production, local file in development
 if os.environ.get("RENDER"):
-    DB = os.path.join("/opt/render/project/src/data", "interview.db")
+    DB_DIR = "/opt/render/project/src/data"
+    DB = os.path.join(DB_DIR, "interview.db")
 else:
-    DB = os.path.join(os.path.dirname(__file__), "interview.db")
+    DB_DIR = os.path.dirname(__file__)
+    DB = os.path.join(DB_DIR, "interview.db")
+
+# Ensure database directory exists
+os.makedirs(DB_DIR, exist_ok=True)
 
 ROLES = ["Software Developer", "Web Developer", "Data Analyst", "ML Engineer", "Fresher (General)"]
 CATEGORIES = ["Technical", "HR", "Behavioral", "Programming"]
