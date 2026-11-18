@@ -27,6 +27,30 @@
     <ul class="feedback-list">
       {% for f in d.feedback %}<li>{{ f }}</li>{% endfor %}
     </ul>
+    {% if d.hits or d.missing %}
+    <div class="keyword-analysis">
+      {% if d.hits %}
+      <div class="keyword-group">
+        <h4 class="keyword-title keyword-matched">Keywords matched ({{ d.hits|length }})</h4>
+        <div class="keyword-tags">
+          {% for kw in d.hits %}
+          <span class="keyword-tag keyword-matched-tag">{{ kw }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      {% if d.missing %}
+      <div class="keyword-group">
+        <h4 class="keyword-title keyword-missing">Keywords missing ({{ d.missing|length }})</h4>
+        <div class="keyword-tags">
+          {% for kw in d.missing %}
+          <span class="keyword-tag keyword-missing-tag">{{ kw }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
   </article>
   {% endfor %}
 </section>

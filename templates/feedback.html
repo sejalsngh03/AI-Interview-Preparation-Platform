@@ -28,6 +28,32 @@
     </ul>
   </div>
 
+  {% if hits or missing %}
+  <div class="fb-block">
+    <h2>Keyword Analysis</h2>
+    {% if hits %}
+    <div class="keyword-group">
+      <h3 class="keyword-title keyword-matched">Matched ({{ hits|length }})</h3>
+      <div class="keyword-tags">
+        {% for kw in hits %}
+        <span class="keyword-tag keyword-matched-tag">{{ kw }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    {% if missing %}
+    <div class="keyword-group">
+      <h3 class="keyword-title keyword-missing">Missing ({{ missing|length }})</h3>
+      <div class="keyword-tags">
+        {% for kw in missing %}
+        <span class="keyword-tag keyword-missing-tag">{{ kw }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
   <details class="fb-reference">
     <summary>Show a model answer</summary>
     <p>{{ question['reference'] }}</p>

@@ -19,6 +19,7 @@
   <h1 class="q-text">{{ question['text'] }}</h1>
 
   <form method="POST" class="stack-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <label>
       Your answer
       <textarea name="answer" rows="8" required autofocus placeholder="Type your answer here — explain your reasoning, not just a one-line reply."></textarea>

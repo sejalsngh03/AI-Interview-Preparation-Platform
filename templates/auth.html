@@ -14,6 +14,7 @@
     </p>
 
     <form method="POST" class="stack-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       {% if mode == 'register' %}
       <label>
         Full name

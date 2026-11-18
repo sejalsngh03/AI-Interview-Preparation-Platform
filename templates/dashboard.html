@@ -38,6 +38,7 @@
   <div class="setup-card">
     <h2>Start a new mock interview</h2>
     <form method="POST" action="{{ url_for('new_interview') }}" class="stack-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
       <div class="field-block">
         <span class="field-label">Category</span>
@@ -87,7 +88,34 @@
   </div>
 
   <div class="recent-card">
-    <h2>Recent sessions</h2>
+    <h2>In progress</h2>
+    {% if in_progress %}
+      <ul class="recent-list">
+        {% for iv, next_step, total in in_progress %}
+        <li>
+          <a href="{{ url_for('resume_interview', interview_id=iv['id']) }}" class="{{ cat_class[iv['category']] }} resume-link">
+            <span class="recent-dot"></span>
+            <span class="recent-info">
+              <span class="recent-tag">{{ iv['category'] }} · {{ iv['role'] }}</span>
+              <span class="recent-date">{{ iv['created_at'][:10] }} — Question {{ next_step }} of {{ total }}</span>
+            </span>
+            <span class="resume-badge">Resume →</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="empty-block">
+        <p class="empty-note">No interviews in progress.</p>
+        <p class="empty-sub">Start a new one above to begin practicing.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="setup-grid">
+  <div class="recent-card full-width">
+    <h2>Recent completed sessions</h2>
     {% if recent %}
       <ul class="recent-list">
         {% for iv, score in recent %}

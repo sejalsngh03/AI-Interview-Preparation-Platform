@@ -10,12 +10,21 @@ from flask import Flask, g, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from flask_wtf.csrf import CSRFProtect
+from dotenv import load_dotenv
 
 from questions import QUESTIONS
 
 # ---------------------------------------------------------------- config ---
+load_dotenv()
+
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "dev-change-me")
+app.secret_key = os.environ.get("SECRET_KEY")
+if not app.secret_key:
+    raise RuntimeError("SECRET_KEY environment variable is required. Set it in .env file.")
+
+# CSRF Protection
+csrf = CSRFProtect(app)
 
 DB = os.path.join(os.path.dirname(__file__), "interview.db")
 
@@ -102,13 +111,29 @@ def clean(text):
     return re.sub(r"[^a-z0-9\s]", " ", (text or "").lower()).strip()
 
 
+def validate_password(password: str) -> tuple[bool, str]:
+    """Validate password strength. Returns (is_valid, error_message)."""
+    if len(password) < 8:
+        return False, "Password must be at least 8 characters long."
+    if not re.search(r"[A-Z]", password):
+        return False, "Password must contain at least one uppercase letter."
+    if not re.search(r"[a-z]", password):
+        return False, "Password must contain at least one lowercase letter."
+    if not re.search(r"\d", password):
+        return False, "Password must contain at least one number."
+    if not re.search(r"[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]", password):
+        return False, "Password must contain at least one special character."
+    return True, ""
+
+
 def evaluate(answer, reference, keywords):
-    """Score 0-10 = 50% keyword coverage + 30% TF-IDF cosine similarity + 20% answer length."""
+    """Score 0-10 = 50% keyword coverage + 30% TF-IDF cosine similarity + 20% answer length.
+    Returns (score, feedback_list, hits, missing)"""
     a_clean = clean(answer)
     kw_list = [k.strip().lower() for k in keywords.split(",") if k.strip()]
 
     if not a_clean:
-        return 0.0, ["No answer was submitted."]
+        return 0.0, ["No answer was submitted."], [], []
 
     # 1. keyword coverage
     hits = [k for k in kw_list if k in a_clean]
@@ -141,7 +166,7 @@ def evaluate(answer, reference, keywords):
     if word_count < 15:
         feedback.append("Try to explain your answer in more detail.")
 
-    return total, feedback
+    return total, feedback, hits, missing
 
 
 # ---------------------------------------------------------------- routes ---
@@ -159,6 +184,12 @@ def register():
 
         if not name or not email or not password:
             flash("Please fill in all fields.", "error")
+            return render_template("auth.html", mode="register")
+
+        # Validate password strength
+        valid, msg = validate_password(password)
+        if not valid:
+            flash(msg, "error")
             return render_template("auth.html", mode="register")
 
         try:
@@ -205,10 +236,41 @@ def logout():
 @login_required
 def dashboard():
     uid = session["uid"]
+    
+    # Clean up abandoned in-progress interviews older than 24 hours
+    from datetime import timedelta
+    cutoff = (datetime.now() - timedelta(hours=24)).isoformat()
+    db().execute(
+        "DELETE FROM interviews WHERE user_id=? AND status='in_progress' AND created_at < ?",
+        (uid, cutoff)
+    )
+    # Also delete orphaned answers for those interviews
+    db().execute(
+        "DELETE FROM answers WHERE interview_id NOT IN (SELECT id FROM interviews)"
+    )
+    db().commit()
+    
     past = db().execute(
         "SELECT * FROM interviews WHERE user_id=? AND status='completed' ORDER BY created_at DESC",
         (uid,),
     ).fetchall()
+    
+    # Get in-progress interviews for resume feature
+    in_progress = db().execute(
+        "SELECT * FROM interviews WHERE user_id=? AND status='in_progress' ORDER BY created_at DESC",
+        (uid,),
+    ).fetchall()
+    
+    # Calculate next step for each in-progress interview
+    in_progress_with_step = []
+    for iv in in_progress:
+        qids = json.loads(iv["qids"])
+        answered_count = db().execute(
+            "SELECT COUNT(*) FROM answers WHERE interview_id=?", (iv["id"],)
+        ).fetchone()[0]
+        next_step = answered_count + 1
+        if next_step <= len(qids):
+            in_progress_with_step.append((iv, next_step, len(qids)))
 
     scores = []
     for iv in past:
@@ -225,6 +287,7 @@ def dashboard():
         roles=ROLES, categories=CATEGORIES, levels=LEVELS,
         total=len(past), avg_overall=avg_overall, best=best,
         recent=list(zip(past[:5], [round(s, 1) for s in scores[:5]])),
+        in_progress=in_progress_with_step,
     )
 
 
@@ -280,6 +343,33 @@ def new_interview():
     return redirect(url_for("interview", interview_id=cur.lastrowid, step=1))
 
 
+@app.route("/interview/<int:interview_id>/resume")
+@login_required
+def resume_interview(interview_id):
+    """Resume an in-progress interview at the next unanswered question."""
+    iv = db().execute(
+        "SELECT * FROM interviews WHERE id=? AND user_id=? AND status='in_progress'",
+        (interview_id, session["uid"])
+    ).fetchone()
+    if not iv:
+        flash("Interview session not found or already completed.", "error")
+        return redirect(url_for("dashboard"))
+
+    qids = json.loads(iv["qids"])
+    answered_count = db().execute(
+        "SELECT COUNT(*) FROM answers WHERE interview_id=?", (interview_id,)
+    ).fetchone()[0]
+    next_step = answered_count + 1
+
+    if next_step > len(qids):
+        # All questions answered but status not updated - mark completed
+        db().execute("UPDATE interviews SET status='completed' WHERE id=?", (interview_id,))
+        db().commit()
+        return redirect(url_for("result", interview_id=interview_id))
+
+    return redirect(url_for("interview", interview_id=interview_id, step=next_step))
+
+
 @app.route("/interview/<int:interview_id>/<int:step>", methods=["GET", "POST"])
 @login_required
 def interview(interview_id, step):
@@ -300,7 +390,7 @@ def interview(interview_id, step):
         qid = qids[step - 1]
         q = db().execute("SELECT * FROM questions WHERE id=?", (qid,)).fetchone()
         answer = request.form.get("answer", "")
-        score, feedback = evaluate(answer, q["reference"], q["keywords"])
+        score, feedback, hits, missing = evaluate(answer, q["reference"], q["keywords"])
 
         db().execute(
             "INSERT INTO answers(interview_id, question_id, answer, score, feedback) VALUES (?,?,?,?,?)",
@@ -321,6 +411,7 @@ def interview(interview_id, step):
         return render_template(
             "feedback.html",
             question=q, answer=answer, score=score, feedback=feedback,
+            hits=hits, missing=missing,
             step=step, total=total_steps, is_last=is_last, next_url=next_url,
         )
 
@@ -343,18 +434,21 @@ def result(interview_id):
         return redirect(url_for("dashboard"))
 
     rows = db().execute(
-        "SELECT a.*, q.text AS q_text FROM answers a JOIN questions q ON a.question_id=q.id "
+        "SELECT a.*, q.text AS q_text, q.reference, q.keywords FROM answers a JOIN questions q ON a.question_id=q.id "
         "WHERE a.interview_id=? ORDER BY a.id",
         (interview_id,),
     ).fetchall()
 
     detailed = []
     for r in rows:
+        score, feedback, hits, missing = evaluate(r["answer"], r["reference"], r["keywords"])
         detailed.append({
             "question": r["q_text"],
             "answer": r["answer"],
             "score": r["score"],
             "feedback": json.loads(r["feedback"]),
+            "hits": hits,
+            "missing": missing,
         })
 
     overall = round(sum(d["score"] for d in detailed) / len(detailed), 1) if detailed else 0
@@ -389,4 +483,5 @@ def progress():
 
 if __name__ == "__main__":
     init_db()
-    app.run(debug=True)
+    debug_mode = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
+    app.run(debug=debug_mode, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
