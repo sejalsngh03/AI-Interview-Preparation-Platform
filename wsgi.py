@@ -3,6 +3,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Set database path for production (Render disk)
+if os.environ.get("RENDER"):
+    os.environ["DB_PATH"] = "/opt/render/project/src/data/interview.db"
+
 from app import app, init_db
 
 init_db()

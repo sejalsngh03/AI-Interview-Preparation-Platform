@@ -9,7 +9,11 @@ import sqlite3
 import shutil
 from datetime import datetime
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "interview.db")
+# Use same DB path logic as app.py
+if os.environ.get("RENDER"):
+    DB_PATH = os.path.join("/opt/render/project/src/data", "interview.db")
+else:
+    DB_PATH = os.path.join(os.path.dirname(__file__), "interview.db")
 BACKUP_DIR = os.path.join(os.path.dirname(__file__), "backups")
 
 def ensure_backup_dir():

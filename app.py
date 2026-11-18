@@ -26,7 +26,11 @@ if not app.secret_key:
 # CSRF Protection
 csrf = CSRFProtect(app)
 
-DB = os.path.join(os.path.dirname(__file__), "interview.db")
+# Database path - use Render disk mount in production, local file in development
+if os.environ.get("RENDER"):
+    DB = os.path.join("/opt/render/project/src/data", "interview.db")
+else:
+    DB = os.path.join(os.path.dirname(__file__), "interview.db")
 
 ROLES = ["Software Developer", "Web Developer", "Data Analyst", "ML Engineer", "Fresher (General)"]
 CATEGORIES = ["Technical", "HR", "Behavioral", "Programming"]

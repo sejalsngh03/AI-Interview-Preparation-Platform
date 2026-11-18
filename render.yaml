@@ -3,7 +3,7 @@ services:
     name: ai-interview-prep
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn wsgi:app
+    startCommand: gunicorn wsgi:app --workers 2 --timeout 120 --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
@@ -11,8 +11,8 @@ services:
         generateValue: true
       - key: FLASK_DEBUG
         value: false
-    # SQLite persistence - for production consider PostgreSQL
-    # disk:
-    #   name: data
-    #   mountPath: /opt/render/project/src/data
-    #   sizeGB: 1
+    # SQLite persistence - requires disk
+    disk:
+      name: data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1
