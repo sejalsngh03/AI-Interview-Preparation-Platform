@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Create account' if mode == 'register' else 'Log in' }} · AI Interview Prep{% endblock %}
+{% block content %}
+<section class="auth-wrap">
+  <div class="auth-card">
+    <p class="eyebrow-none kicker">Interview Prep</p>
+    <h1>{{ 'Create your account' if mode == 'register' else 'Welcome back' }}</h1>
+    <p class="lede">
+      {% if mode == 'register' %}
+        Set up a profile to start practicing technical, HR and behavioral interviews.
+      {% else %}
+        Log in to pick up your interview practice where you left off.
+      {% endif %}
+    </p>
+
+    <form method="POST" class="stack-form" id="auth-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if mode == 'register' %}
+      <label>
+        Full name
+        <input type="text" name="name" required autofocus placeholder="e.g. Sejal Singh">
+      </label>
+      {% endif %}
+      <label>
+        Email
+        <input type="email" name="email" required placeholder="you@example.com" {{ 'autofocus' if mode != 'register' }}>
+      </label>
+      <label class="password-field">
+        Password
+        <div class="password-input-wrap">
+          <input type="password" name="password" id="password" required 
+                 placeholder="Min 8 chars: upper, lower, number, symbol"
+                 {% if mode == 'register' %}oninput="updatePasswordStrength(this.value)"{% endif %}>
+          <button type="button" class="toggle-password" onclick="togglePasswordVisibility(this)" aria-label="Toggle password visibility">
+            <span class="eye-open">👁</span>
+            <span class="eye-closed" style="display:none">🙈</span>
+          </button>
+        </div>
+        {% if mode == 'register' %}
+        <div class="password-strength" id="password-strength" style="display:none">
+          <div class="strength-bar">
+            <div class="strength-fill" id="strength-fill"></div>
+          </div>
+          <div class="strength-text" id="strength-text"></div>
+          <ul class="requirements" id="requirements">
+            <li data-req="length">At least 8 characters</li>
+            <li data-req="upper">One uppercase letter (A-Z)</li>
+            <li data-req="lower">One lowercase letter (a-z)</li>
+            <li data-req="digit">One number (0-9)</li>
+            <li data-req="special">One special symbol (!@#$%^&*)</li>
+          </ul>
+        </div>
+        {% endif %}
+      </label>
+      <button type="submit" class="btn-primary">{{ 'Create account' if mode == 'register' else 'Log in' }}</button>
+    </form>
+
+    <p class="switch-line">
+      {% if mode == 'register' %}
+        Already have an account? <a href="{{ url_for('login') }}">Log in</a>
+      {% else %}
+        New here? <a href="{{ url_for('register') }}">Create an account</a>
+      {% endif %}
+    </p>
+  </div>
+</section>
+
+<script>
+function togglePasswordVisibility(btn) {
+  const input = btn.previousElementSibling;
+  const eyeOpen = btn.querySelector('.eye-open');
+  const eyeClosed = btn.querySelector('.eye-closed');
+  if (input.type === 'password') {
+    input.type = 'text';
+    eyeOpen.style.display = 'none';
+    eyeClosed.style.display = 'inline';
+  } else {
+    input.type = 'password';
+    eyeOpen.style.display = 'inline';
+    eyeClosed.style.display = 'none';
+  }
+}
+
+function updatePasswordStrength(password) {
+  const strengthDiv = document.getElementById('password-strength');
+  const fill = document.getElementById('strength-fill');
+  const text = document.getElementById('strength-text');
+  const requirements = document.querySelectorAll('#requirements li');
+  
+  if (!password) {
+    strengthDiv.style.display = 'none';
+    return;
+  }
+  
+  strengthDiv.style.display = 'block';
+  
+  const checks = {
+    length: password.length >= 8,
+    upper: /[A-Z]/.test(password),
+    lower: /[a-z]/.test(password),
+    digit: /[0-9]/.test(password),
+    special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+  };
+  
+  const passed = Object.values(checks).filter(Boolean).length;
+  const total = Object.keys(checks).length;
+  const percentage = (passed / total) * 100;
+  
+  fill.style.width = percentage + '%';
+  
+  // Color based on strength
+  if (passed <= 2) {
+    fill.style.background = '#B23A2E';
+    text.textContent = 'Weak password';
+    text.style.color = '#B23A2E';
+  } else if (passed <= 3) {
+    fill.style.background = '#C99A3B';
+    text.textContent = 'Fair password';
+    text.style.color = '#8A6A1E';
+  } else if (passed <= 4) {
+    fill.style.background = '#3E6259';
+    text.textContent = 'Good password';
+    text.style.color = '#3E6259';
+  } else {
+    fill.style.background = '#2B4A43';
+    text.textContent = 'Strong password';
+    text.style.color = '#2B4A43';
+  }
+  
+  // Update requirement list
+  requirements.forEach(li => {
+    const req = li.dataset.req;
+    if (checks[req]) {
+      li.classList.add('met');
+    } else {
+      li.classList.remove('met');
+    }
+  });
+}
+</script>
+{% endblock %}
