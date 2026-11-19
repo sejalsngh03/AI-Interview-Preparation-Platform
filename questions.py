@@ -34,6 +34,23 @@ QUESTIONS = [
      "its own, while a method is a function that is defined inside a class and "
      "operates on an object of that class.",
      "function,method,class,object,reusable,independent"),
+    
+    ("Programming", "Software Developer", "Beginner",
+     "What is encapsulation in object-oriented programming?",
+     "Encapsulation is an object-oriented programming concept that combines data and the methods that operate on it inside a class. It restricts direct access to some internal details and allows controlled access through methods such as getters and setters.",
+     "encapsulation,oop,class,data hiding,getter,setter,access"),
+
+    ("Programming", "Software Developer", "Beginner",
+     "What is the difference between a local variable and a global variable?",
+     "A local variable is declared inside a function or block and can generally be accessed only within that scope, while a global variable is declared outside functions and can be accessed from multiple parts of a program according to the language's scope rules.",
+     "local variable,global variable,scope,function,block,access"),
+
+    ("Programming", "Software Developer", "Beginner",
+     "What is an exception in programming?",
+     "An exception is an event that occurs during program execution and interrupts the normal flow of instructions. Exception handling constructs such as try, catch or except allow a program to respond to errors gracefully.",
+     "exception,error,runtime,try,catch,except,exception handling"),
+
+
 
     ("Programming", "Software Developer", "Beginner",
      "What is a variable and why do we use data types?",
@@ -80,6 +97,27 @@ QUESTIONS = [
      "performance in the worst case.",
      "hash function,bucket,index,collision,chaining,constant time,worst case"),
 
+    ("Programming", "Software Developer", "Intermediate",
+     "What is polymorphism in object-oriented programming?",
+     "Polymorphism means that the same interface or method name can represent different behaviors depending on the object or data type. It supports flexibility and allows different classes to provide their own implementations of a common method.",
+     "polymorphism,oop,method overriding,overloading,interface,flexibility"),
+
+    ("Programming", "Software Developer", "Intermediate",
+     "What is the difference between an abstract class and an interface?",
+     "An abstract class can provide both implemented methods and abstract methods, and it can maintain instance state. An interface primarily defines a contract that implementing classes must follow; the exact features supported by interfaces depend on the programming language.",
+     "abstract class,interface,abstract method,implementation,contract,class"),
+
+    ("Programming", "Software Developer", "Intermediate",
+     "What is a constructor and when is it called?",
+     "A constructor is a special class member used to initialize a newly created object. It is generally called automatically when an object is instantiated, and it can assign initial values to the object's fields.",
+     "constructor,object,initialize,instantiate,class,fields"),
+
+    ("Programming", "Software Developer", "Intermediate",
+     "What is the difference between pass by value and pass by reference?",
+     "In pass by value, a function receives a copy of an argument's value, so changing the parameter does not directly change the caller's variable. In pass by reference, the function can access the original variable through a reference and may modify it; exact behavior depends on the language.",
+     "pass by value,pass by reference,argument,parameter,copy,reference"),
+
+
     ("Programming", "Software Developer", "Advanced",
      "What is the difference between multithreading and multiprocessing?",
      "Multithreading runs multiple threads within a single process sharing the "
@@ -87,6 +125,13 @@ QUESTIONS = [
      "multiprocessing runs multiple independent processes each with its own "
      "memory space, offering better isolation at higher resource cost.",
      "multithreading,multiprocessing,thread,process,memory space,race condition"),
+    
+    ("Programming", "Software Developer", "Advanced",
+     "What is a race condition in concurrent programming?",
+     "A race condition occurs when multiple threads or processes access shared data concurrently and the final result depends on the unpredictable order of execution. It can be prevented or controlled using synchronization mechanisms such as locks, mutexes and atomic operations.",
+     "race condition,concurrency,shared data,thread,process,lock,mutex,synchronization"),
+
+
 
     # -- Web Developer --
     ("Programming", "Web Developer", "Beginner",
@@ -102,6 +147,17 @@ QUESTIONS = [
      "page in memory that browsers create, allowing JavaScript to read and "
      "dynamically change the content, structure and style of the page.",
      "dom,document object model,tree,javascript,html page,dynamic"),
+
+    ("Programming", "Web Developer", "Beginner",
+     "What is the difference between frontend and backend development?",
+     "Frontend development focuses on the part of a website that users see and interact with, including layout and user interface. Backend development handles server-side logic, data processing, authentication and communication with databases.",
+     "frontend,backend,user interface,server,database,logic"),
+
+    ("Programming", "Web Developer", "Beginner",
+     "What is the purpose of JavaScript in web development?",
+     "JavaScript adds behavior and interactivity to web pages. It can respond to user events, validate forms, update page content dynamically and communicate with servers without requiring a full page reload.",
+     "javascript,interactivity,event,dynamic content,form validation,web page"),
+
 
     ("Programming", "Web Developer", "Intermediate",
      "What is the difference between GET and POST HTTP methods?",
@@ -134,6 +190,13 @@ QUESTIONS = [
      "avoiding directly inserting untrusted input into the DOM.",
      "xss,cross site scripting,injection,sanitize,escape,security,user input"),
 
+    
+    ("Programming", "Web Developer", "Advanced",
+     "What is CORS and why is it required?",
+     "Cross-Origin Resource Sharing is a browser security mechanism that uses HTTP headers to specify whether a web page from one origin may access resources from another origin. It allows servers to grant controlled cross-origin access.",
+     "cors,cross-origin,browser,security,http headers,origin,access"),
+
+
     # -- Fresher (General) / Programming --
     ("Programming", "Fresher (General)", "Beginner",
      "What is a loop and why is it used in programming?",
@@ -148,6 +211,17 @@ QUESTIONS = [
      "while a tuple is immutable, meaning once created its elements cannot be "
      "modified; both can store an ordered collection of items.",
      "list,tuple,mutable,immutable,python,ordered collection"),
+
+     ("Programming", "Fresher (General)", "Beginner",
+     "What is the difference between a syntax error and a logical error?",
+     "A syntax error occurs when code violates the grammar rules of a programming language and may prevent the program from running. A logical error occurs when the program runs but produces an incorrect result because its logic is wrong.",
+     "syntax error,logical error,grammar,program execution,incorrect result,debugging"),
+
+    ("Programming", "Fresher (General)", "Beginner",
+     "What is an algorithm?",
+     "An algorithm is a finite sequence of clear and ordered steps used to solve a problem or perform a task. A good algorithm should produce the required result and should eventually terminate.",
+     "algorithm,steps,problem solving,finite,ordered,terminate"),
+
 
     ("Programming", "Fresher (General)", "Intermediate",
      "What is an API and why is it useful?",
